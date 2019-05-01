@@ -12,8 +12,8 @@ set :views, Proc.new { File.join(root, "../views/") }
 	end
  
 	post '/recipes' do
-	  @recipes = Recipe.create(:name => params[:name], :ingredients => params[:ingredients],:cook_time => params[:cook_time])
-	  redirect to "/recipe/#{@recipes.id}"
+	  @recipe = Recipe.create(:name => params[:name], :ingredients => params[:ingredients],:cook_time => params[:cook_time])
+	  redirect to "/recipes/#{@recipe.id}"
 	end
 
 	get '/recipes/new' do
@@ -32,12 +32,18 @@ set :views, Proc.new { File.join(root, "../views/") }
 	end
 
 	patch '/recipes/:id' do #edit action
+	  @recipe = Recipe.find_by_id(params[:id])
+	  @recipe.name = params[:name]
+	  @recipe.ingredients = params[:ingredients]
+	  @recipe.cook_time = params[:cook_time]
+	  @recipe.save
+	  redirect to "/recipes/#{@recipe.id}"
+	end
+
+	delete '/recipes/:id' do 
 	  @recipes = Recipe.find_by_id(params[:id])
-	  @recipes.name = params[:name]
-	  @recipes.ingredients = params[:ingredients]
-	  @recipes.cook_time = params[:cook_time]
-	  @recipes.save
-	  redirect to "/recipes/#{@recipes.id}"
+	  @recipes.delete
+	  redirect to '/recipes'
 	end
 
 end
